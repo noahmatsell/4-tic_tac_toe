@@ -30,17 +30,16 @@ var game = {
       this.oName = prompt("Player 2, enter your name:");
       switchViewTo("newGame");
     }
-    else if(state === "end") {
+    else if(isFinished()) {
         this.status = "ended";
-        if(result === "X-won")
-          //X won
-          switchViewTo("won");
-        else if(result === "O-won")
-          //X lost
-          switchViewTo("lost");
-        else
-          //it's a draw
-          switchViewTo("draw");
+        var winner;
+        if (game.turn === "x"){
+          winner = game.xName;
+        }else{
+          winner = game.oName
+        }
+        finish.querySelector("header .message").textContent = game.turn + " wins! Congratulations"+winner+"!"
+        switchViewTo("win");
     }
     else {
       //the game is still running
@@ -62,47 +61,52 @@ var game = {
 
 //game end when 3 symbols in a row vertically, horizontally, or diagonally
 var isFinished = function(){        
-  var B = this.board;
+  var B = game.board;
   //check rows
   for(var i = 0; i <= 6; i = i + 3) {
       if(B[i] !== "E" && B[i] === B[i + 1] && B[i + 1] == B[i + 2]) {
-          this.result = B[i] + "-won"; //update the state result
           return true;
       }
   }
   //check columns
   for(var i = 0; i <= 2 ; i++) {
       if(B[i] !== "E" && B[i] === B[i + 3] && B[i + 3] === B[i + 6]) {
-          this.result = B[i] + "-won"; //update the state result
           return true;
       }
   }
   //check diagonals
   for(var i = 0, j = 4; i <= 2 ; i = i + 2, j = j - 2) {
       if(B[i] !== "E" && B[i] == B[i + j] && B[i + j] === B[i + 2*j]) {
-          this.result = B[i] + "-won"; //update the state result
           return true;
       }
   }
 };
   
 var switchViewTo = function(view){
+  
   if (view === "newGame"){
     start.classList.add("hidden");
     finish.classList.add("hidden");
     board.classList.remove("hidden");
     oBox.classList.remove("active");
     xBox.classList.add("active");
+    
     //update xName
+    xBox.insertAdjacentHTML('beforeend', "<div class='displayName'>"+game.xName+"</div>");
     //update oName
+    oBox.insertAdjacentHTML('beforeend', "<div class='displayName'>"+game.oName+"</div>");
   }else if (view === "oTurn"){
     console.log("o turn");
     xBox.classList.remove("active");
     oBox.classList.add("active");
   }else if (view === "xTurn"){
     console.log("x turn");
-    xBox.classList.remove("active");
-    oBox.classList.add("active");
+    oBox.classList.remove("active");
+    xBox.classList.add("active");
+  }else if (view === "win"){
+    start.classList.add("hidden");
+    board.classList.add("hidden");
+    finish.classList.remove("hidden");
   }
 
   //hide board
