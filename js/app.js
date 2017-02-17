@@ -93,6 +93,8 @@ var switchViewTo = function(view){
     board.classList.remove("hidden");
     oBox.classList.remove("active");
     xBox.classList.add("active");
+    //update xName
+    //update oName
   }else if (view === "oTurn"){
     console.log("o turn");
     xBox.classList.remove("active");
@@ -141,6 +143,15 @@ var clickBox = function(){
         this.classList.add('box-filled-2');
         // remove SVG hover so user cannot click same box again without mousing out
         this.classList.remove('xSVG');
+        //update board
+        var i = 0;
+        var elem = this.previousElementSibling;
+        while( elem != null ){
+          elem = elem.previousElementSibling;
+          i++;
+        }
+        console.log(i);
+        game.board[i] = "x";
         // change turn
         game.advanceTo();
     }
@@ -150,7 +161,16 @@ var clickBox = function(){
           this.classList.add('box-filled-1');
           // remove SVG hover so user cannot click same box again without mousing out
           this.classList.remove('oSVG');
-          // switch active players
+          //update board
+          var i = 0;
+          var elem = this.previousElementSibling;
+          while( elem != null ){
+            elem = elem.previousElementSibling;
+            i++;
+          }
+          console.log(i);
+          game.board[i] = "o";
+          // // switch active players
           game.advanceTo();
       }
   }
