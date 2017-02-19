@@ -6,7 +6,7 @@ var boardBoxes = document.getElementsByClassName("box");
 var startButton = document.getElementById("startButton");
 var oBox = document.getElementById("player1");
 var xBox = document.getElementById("player2");
-
+var newGame = document.getElementById("newGame");
 board.classList.add("hidden");
 finish.classList.add("hidden");
 
@@ -35,8 +35,10 @@ var game = {
         var winner;
         if (game.turn === "x"){
           winner = game.xName;
+          finish.classList.add("screen-win-two");
         }else{
           winner = game.oName
+          finish.classList.add("screen-win-one");
         }
         finish.querySelector("header .message").textContent = game.turn + " wins! Congratulations"+winner+"!"
         switchViewTo("win");
@@ -90,7 +92,8 @@ var switchViewTo = function(view){
     board.classList.remove("hidden");
     oBox.classList.remove("active");
     xBox.classList.add("active");
-    
+    //remove box filled classes
+    //remove old names
     //update xName
     xBox.insertAdjacentHTML('beforeend', "<div class='displayName'>"+game.xName+"</div>");
     //update oName
@@ -183,6 +186,10 @@ var clickBox = function(){
 Event Listeners
 ----------------*/
 startButton.addEventListener("click", function(){
+  game.advanceTo("start");
+});
+
+newGame.addEventListener("click", function(){
   game.advanceTo("start");
 });
 
