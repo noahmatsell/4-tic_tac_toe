@@ -7,8 +7,13 @@ var startButton = document.getElementById("startButton");
 var oBox = document.getElementById("player1");
 var xBox = document.getElementById("player2");
 var newGame = document.getElementById("newGame");
+
 board.classList.add("hidden");
 finish.classList.add("hidden");
+//update xName
+xBox.insertAdjacentHTML('beforeend', "<div class='displayName'></div>");
+//update oName
+oBox.insertAdjacentHTML('beforeend', "<div class='displayName'></div>");
 
 //create player prototype
 //"E" stands for empty board cell
@@ -32,16 +37,7 @@ var game = {
     }
     else if(isFinished()) {
         this.status = "ended";
-        var winner;
-        if (game.turn === "x"){
-          winner = game.xName;
-          finish.classList.add("screen-win-two");
-        }else{
-          winner = game.oName
-          finish.classList.add("screen-win-one");
-        }
-        finish.querySelector("header .message").textContent = game.turn + " wins! Congratulations"+winner+"!"
-        switchViewTo("win");
+        switchViewTo("end");
     }
     else {
       //the game is still running
@@ -52,7 +48,7 @@ var game = {
       else {
         this.turn = "x";
         switchViewTo("xTurn");
-      }
+      } 
     }
   }
 };
@@ -67,20 +63,28 @@ var isFinished = function(){
   //check rows
   for(var i = 0; i <= 6; i = i + 3) {
       if(B[i] !== "E" && B[i] === B[i + 1] && B[i + 1] == B[i + 2]) {
+          game.status = "win";
           return true;
       }
   }
   //check columns
   for(var i = 0; i <= 2 ; i++) {
       if(B[i] !== "E" && B[i] === B[i + 3] && B[i + 3] === B[i + 6]) {
+          game.status = "win";
           return true;
       }
   }
   //check diagonals
   for(var i = 0, j = 4; i <= 2 ; i = i + 2, j = j - 2) {
       if(B[i] !== "E" && B[i] == B[i + j] && B[i + j] === B[i + 2*j]) {
+          game.status = "win";
           return true;
       }
+  }
+  //draw
+  if (B[0] !== "E" && B[1] !== "E" && B[2] !== "E" && B[3] !== "E" && B[4] !== "E" && B[5] !== "E"){
+      game.status = "draw";
+      return true;
   }
 };
   
@@ -93,11 +97,15 @@ var switchViewTo = function(view){
     oBox.classList.remove("active");
     xBox.classList.add("active");
     //remove box filled classes
+    for (var i = 0; i < boardBoxes.length; i++) {
+        var box = boardBoxes[i];
+        box.classList.remove("box-filled-1");
+        box.classList.remove("box-filled-2");
+    }
     //remove old names
-    //update xName
-    xBox.insertAdjacentHTML('beforeend', "<div class='displayName'>"+game.xName+"</div>");
-    //update oName
-    oBox.insertAdjacentHTML('beforeend', "<div class='displayName'>"+game.oName+"</div>");
+    xBox.querySelector(".displayName").textContent = game.xName;
+    oBox.querySelector(".displayName").textContent = game.oName;
+    
   }else if (view === "oTurn"){
     console.log("o turn");
     xBox.classList.remove("active");
@@ -106,10 +114,32 @@ var switchViewTo = function(view){
     console.log("x turn");
     oBox.classList.remove("active");
     xBox.classList.add("active");
-  }else if (view === "win"){
+  }else if (view === "end"){
     start.classList.add("hidden");
     board.classList.add("hidden");
     finish.classList.remove("hidden");
+
+    if(game.status === "draw"){
+      finish.classList.remove("screen-win-one");
+      finish.classList.remove("screen-win-two");
+      finish.classList.add("screen-win-tie");
+      finish.querySelector("header .message").textContent = "It's a draw!";
+    }else{
+      var winner;
+      if (game.turn === "x"){
+        winner = game.xName;
+        finish.classList.remove("screen-win-tie");
+        finish.classList.remove("screen-win-one");
+        finish.classList.add("screen-win-two");
+      }else{
+        winner = game.oName;
+        finish.classList.remove("screen-win-tie");
+        finish.classList.remove("screen-win-two");
+        finish.classList.add("screen-win-one");
+      }
+      finish.querySelector("header .message").textContent = game.turn + " wins! Congrats "+winner+"!";
+    }
+
   }
 
   //hide board
@@ -151,14 +181,14 @@ var clickBox = function(){
         // remove SVG hover so user cannot click same box again without mousing out
         this.classList.remove('xSVG');
         //update board
-        var i = 0;
+        var iBox = 0;
         var elem = this.previousElementSibling;
-        while( elem != null ){
+        while( elem !== null ){
           elem = elem.previousElementSibling;
-          i++;
+          iBox++;
         }
         console.log(i);
-        game.board[i] = "x";
+        game.board[iBox] = "x";
         // change turn
         game.advanceTo();
     }
@@ -169,14 +199,14 @@ var clickBox = function(){
           // remove SVG hover so user cannot click same box again without mousing out
           this.classList.remove('oSVG');
           //update board
-          var i = 0;
+          var iBox2 = 0;
           var elem = this.previousElementSibling;
           while( elem != null ){
             elem = elem.previousElementSibling;
-            i++;
+            iBox2++;
           }
           console.log(i);
-          game.board[i] = "o";
+          game.board[iBox2] = "o";
           // // switch active players
           game.advanceTo();
       }
