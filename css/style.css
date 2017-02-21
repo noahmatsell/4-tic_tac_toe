@@ -147,3 +147,23 @@ h1 {
   background-image: url(../img/o.svg) !important; 
 }
 
+.game_type {
+  border: none;
+  padding: 20px 0px;
+}
+label img{
+  width: 32px;
+}
+label{
+  padding: 20px;
+  display: inline-block;
+}
+label *{
+  display: block;
+  margin:0px auto;
+}
+.selected{
+    background: rgba(255,255,255,0.1);
+    border: 1px solid white;
+    border-radius: 3px;
+}
