@@ -1,3 +1,4 @@
+var ticTacToe = !function(){
 /*-----------
 Vars
 -----------*/
@@ -42,13 +43,13 @@ var game = {
       if(this.turn === "x") {
         this.turn = "o";
         switchViewTo("oTurn");
+        if (game.type === "one"){
+          computerTurn();
+        }
       }
       else {
         this.turn = "x";
         switchViewTo("xTurn");
-        if (game.type === "one"){
-          computerTurn();
-        }
       } 
     }
   }
@@ -61,32 +62,30 @@ Functions
 //Check for end-game conditions
 var isFinished = function(){        
   var B = game.board;
-  //draw
+  //check rows
+  for(var i = 0; i <= 6; i = i + 3) {
+    if(B[i] !== "E" && B[i] === B[i + 1] && B[i + 1] == B[i + 2]) {
+      game.status = "win";
+      return true;
+    }
+  }
+  //check columns
+  for(var i = 0; i <= 2 ; i++) {
+    if(B[i] !== "E" && B[i] === B[i + 3] && B[i + 3] === B[i + 6]) {
+      game.status = "win";
+      return true;
+    }
+  }
+  //check diagonals
+  for(var i = 0, j = 4; i <= 2 ; i = i + 2, j = j - 2) {
+    if(B[i] !== "E" && B[i] == B[i + j] && B[i + j] === B[i + 2*j]) {
+      game.status = "win";
+      return true;
+    }
+  }
   if (B[0] !== "E" && B[1] !== "E" && B[2] !== "E" && B[3] !== "E" && B[4] !== "E" && B[5] !== "E" && B[6] !== "E" && B[7] !== "E" && B[8] !== "E"){
     game.status = "draw";
     return true;
-  }else{
-    //check rows
-    for(var i = 0; i <= 6; i = i + 3) {
-      if(B[i] !== "E" && B[i] === B[i + 1] && B[i + 1] == B[i + 2]) {
-        game.status = "win";
-        return true;
-      }
-    }
-    //check columns
-    for(var i = 0; i <= 2 ; i++) {
-      if(B[i] !== "E" && B[i] === B[i + 3] && B[i + 3] === B[i + 6]) {
-        game.status = "win";
-        return true;
-      }
-    }
-    //check diagonals
-    for(var i = 0, j = 4; i <= 2 ; i = i + 2, j = j - 2) {
-      if(B[i] !== "E" && B[i] == B[i + j] && B[i + j] === B[i + 2*j]) {
-        game.status = "win";
-        return true;
-      }
-    }
   }
 };
 //UI change handler  
@@ -159,11 +158,20 @@ var scoring = function(){
 
 var computerTurn = function(){
   //minimax find best move
-  var nextMove = bestMove(game.board);
+  //var nextMove = bestMove(game.board);
   //take move
-  game.board[nextMove] = "x";
-  //advance to next turn
-  game.advanceTo();
+  var potentialMoves = [];
+  for(var i=0;i<game.board.length;i++){
+    if (game.board[i] === "E"){
+      potentialMoves.push(i);
+    }
+  }
+  var move = potentialMoves[Math.floor(Math.random() * potentialMoves.length)];
+
+  //update game board
+  game.board[move] = "x";
+  //update UI
+  boardBoxes[move].click();
 };
 
 var bestMove = function(gameBoard){
@@ -278,12 +286,13 @@ twoPlayerSelect.addEventListener("click", function(){
 });
 //New Game
 newGame.addEventListener("click", function(){
-  game.advanceTo("start");
+  window.location.reload();
 });
 //Game Tile boxes
 for (var i = 0; i < boardBoxes.length; i++) {
         var box = boardBoxes[i];
-        box.addEventListener('mouseover', hover, false);
-        box.addEventListener('mouseout', hoverOut, false);
-        box.addEventListener('click', clickBox, false);
-    }
+  box.addEventListener('mouseover', hover, false);
+  box.addEventListener('mouseout', hoverOut, false);
+  box.addEventListener('click', clickBox, false);
+}
+}();
