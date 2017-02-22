@@ -14,8 +14,9 @@ var twoPlayerSelect = document.getElementById("two_player");
 
 //Game Object
 var game = { 
-  board: ["E", "E", "E", "E", "E", "E", "E", "E", "E"],
+  board: ["E", "E", "E", "E", "E", "E", "E", "E", "E"], //E means empty
   turn: "x",
+  type: "", //one or two
   status: "beginning",
   xName: "",
   oName: "",
@@ -25,14 +26,19 @@ var game = {
       this.status = "running";
       this.turn = "x";
       this.xName = prompt("Player 1, enter your name:");
-      this.oName = prompt("Player 2, enter your name:");
+      if(game.type === "two"){
+        this.oName = prompt("Player 2, enter your name:");
+      }else{
+        this.oName = "Computer";
+      }
       switchViewTo("newGame");
     }
+    //Is game over
     else if(isFinished()) {
         switchViewTo("end");
     }
+    //change turns
     else {
-      //the game is still running
       if(this.turn === "x") {
         this.turn = "o";
         switchViewTo("oTurn");
@@ -40,6 +46,9 @@ var game = {
       else {
         this.turn = "x";
         switchViewTo("xTurn");
+        if (game.type === "one"){
+          computerTurn();
+        }
       } 
     }
   }
@@ -148,6 +157,36 @@ var scoring = function(){
   //else return 0
 }
 
+var computerTurn = function(){
+  //minimax find best move
+  var nextMove = bestMove(game.board);
+  //take move
+  game.board[nextMove] = "x";
+  //advance to next turn
+  game.advanceTo();
+};
+
+var bestMove = function(gameBoard){
+  var potentialMoves = [];
+  var scores = [];
+  var moves = [];
+  //find each available space
+  for(var i=0;i<gameBoard.length;i++){
+    if (gameBoard[i] === "E"){
+      potentialMoves.push(i);
+    }
+  //check each move
+  for(var i=0;i<potentialMoves.length;i++){
+    newBoard[potentialMoves[i]] = "x";
+    //score of move
+    var newScore = isFinished(newBoard);
+  }
+
+  }
+
+
+}
+
 //Hover icon behaviour
 var hover = function(){
   if (game.turn === "x" && this.className != 'box box-filled-2' && this.className != 'box box-filled-1') {
@@ -220,7 +259,13 @@ Event Listeners
 ----------------*/
 //Start Button
 startButton.addEventListener("click", function(){
-  game.advanceTo("start");
+  if(twoPlayerSelect.checked){
+    game.type = "two";
+    game.advanceTo("start");
+  }else if(onePlayerSelect.checked){
+    game.type = "one";
+    game.advanceTo("start");
+  }
 });
 //Game type selection
 onePlayerSelect.addEventListener("click", function(){
