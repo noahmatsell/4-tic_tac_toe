@@ -154,16 +154,7 @@ var switchViewTo = function(view){
   }
 };
 
-var scoring = function(){
-  //if player wins, return +10
-  //else if opponent wins, return -10
-  //else return 0
-}
-
 var computerTurn = function(){
-  //minimax find best move
-  //var nextMove = bestMove(game.board);
-  //take move
   var potentialMoves = [];
   for(var i=0;i<game.board.length;i++){
     if (game.board[i] === "E"){
@@ -177,27 +168,6 @@ var computerTurn = function(){
   //update UI
   boardBoxes[move].click();
 };
-
-var bestMove = function(gameBoard){
-  var potentialMoves = [];
-  var scores = [];
-  var moves = [];
-  //find each available space
-  for(var i=0;i<gameBoard.length;i++){
-    if (gameBoard[i] === "E"){
-      potentialMoves.push(i);
-    }
-  //check each move
-  for(var i=0;i<potentialMoves.length;i++){
-    newBoard[potentialMoves[i]] = "x";
-    //score of move
-    var newScore = isFinished(newBoard);
-  }
-
-  }
-
-
-}
 
 //Hover icon behaviour
 var hover = function(){
@@ -243,7 +213,7 @@ var clickBox = function(){
           //update board
           var iBox2 = 0;
           var elem = this.previousElementSibling;
-          while( elem != null ){
+          while( elem !== null ){
             elem = elem.previousElementSibling;
             iBox2++;
           }
