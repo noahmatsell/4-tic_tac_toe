@@ -10,6 +10,7 @@ var startButton = document.getElementById("startButton");
 var oBox = document.getElementById("player1");
 var xBox = document.getElementById("player2");
 var newGame = document.getElementById("newGame");
+var restart = document.getElementById("restart");
 var onePlayerSelect = document.getElementById("one_player");
 var twoPlayerSelect = document.getElementById("two_player");
 
@@ -26,11 +27,13 @@ var game = {
       this.board = ["E", "E", "E", "E", "E", "E", "E", "E", "E"];
       this.status = "running";
       this.turn = "x";
-      this.xName = prompt("Player 1, enter your name:");
-      if(game.type === "two"){
-        this.oName = prompt("Player 2, enter your name:");
-      }else{
-        this.oName = "Computer";
+      if (game.xName === "" && game.oName ===""){ 
+        this.xName = prompt("Player 1, enter your name:");
+        if(game.type === "two"){
+          this.oName = prompt("Player 2, enter your name:");
+        }else{
+          this.oName = "Computer";
+        }
       }
       switchViewTo("newGame");
     }
@@ -104,8 +107,9 @@ var switchViewTo = function(view){
         box.classList.remove("box-filled-2");
     }
     //remove old names
-    xBox.querySelector(".displayName").textContent = game.xName;
-    oBox.querySelector(".displayName").textContent = game.oName;
+      xBox.querySelector(".displayName").textContent = game.xName;
+      oBox.querySelector(".displayName").textContent = game.oName;
+    
   }
   //start o turn
   else if (view === "oTurn"){
@@ -287,6 +291,10 @@ twoPlayerSelect.addEventListener("click", function(){
 //New Game
 newGame.addEventListener("click", function(){
   window.location.reload();
+});
+//Restart Game
+restart.addEventListener("click", function(){
+  game.advanceTo("start");
 });
 //Game Tile boxes
 for (var i = 0; i < boardBoxes.length; i++) {
